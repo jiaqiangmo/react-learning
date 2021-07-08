@@ -7,6 +7,7 @@ class List extends React.Component {
         super(props);
         this.handleDelete = this.handleDelete.bind(this)
     }
+
     handleDelete(e) {
         let id = e.target.dataset.id
         this.props.onChange(id)
@@ -18,16 +19,19 @@ class List extends React.Component {
         this.setState({
             todoLists: array
         })
+        //这里为啥报错调不到父组件的store方法？
+        // this.props.store('todoList', array)
+        console.log(this.props);
         //这样不行？
         // this.props.todoLists[index].completed = !this.props.todoLists[index].completed
     }
     render() {
         return this.props.todoLists.map((item, index) => {
             return <React.Fragment key={item.id}>
-                <li className={item.completed ? "completed" : ""} key={item.id}>
+                <li className={item.completed ? "completed" : ""} >
                     <div className="view">
                         <input className="toggle" type="checkbox"
-                            defaultChecked={item.completed}
+                            checked={item.completed}
                             onChange={this.handleToggle.bind(this, index)} />
                         <label>{item.title}</label>
                         <button className="destroy" data-id={item.id} onClick={this.handleDelete}></button>
@@ -43,26 +47,28 @@ class Todos extends React.Component {
         super(props)
         this.ENTER_KEY = 13
         this.handleClickSelectedAll = this.handleClickSelectedAll.bind(this)
-        this.handleClickCanccelAll = this.handleClickCanccelAll.bind(this)
+        this.handleClickClearCompleted = this.handleClickClearCompleted.bind(this)
+        this.handleClickActiveTodos = this.handleClickActiveTodos.bind(this)
+        this.handleClickCompletedTodos = this.handleClickCompletedTodos.bind(this)
     }
     state = {
         newTodo: '',
         todoLists: [
-            {
-                id: nanoid(),
-                title: '黄老板',
-                completed: false
-            },
-            {
-                id: nanoid(),
-                title: '李老板',
-                completed: true
-            },
-            {
-                id: nanoid(),
-                title: '连老板',
-                completed: false
-            },
+            // {
+            //     id: nanoid(),
+            //     title: '黄老板',
+            //     completed: false
+            // },
+            // {
+            //     id: nanoid(),
+            //     title: '李老板',
+            //     completed: true
+            // },
+            // {
+            //     id: nanoid(),
+            //     title: '连老板',
+            //     completed: false
+            // },
         ],
     }
 
@@ -74,19 +80,21 @@ class Todos extends React.Component {
             todoLists: array
         })
     }
+    getCount() {
+        let activeTodoCount = this.state.todoLists.reduce(function (accum, todo) {
+            return todo.completed ? accum : accum + 1;
+        }, 0);
+        // let completedCount = this.state.todoLists.length - activeTodoCount;
+        return activeTodoCount
+    }
     handleClickSelectedAll() {
         let array = this.state.todoLists
-
-        array.map((item) => {
-            return item.completed = true
-        })
+        array.forEach((item) => item.completed = !item.completed)
         this.setState({ todoLists: array })
     }
-    handleClickCanccelAll() {
-        let array = this.state.todoLists
-
-        array.map((item) => {
-            return item.completed = false
+    handleClickClearCompleted() {
+        let array = this.state.todoLists.filter((item) => {
+            return !item.completed
         })
         this.setState({ todoLists: array })
     }
@@ -102,6 +110,7 @@ class Todos extends React.Component {
         event.preventDefault();
         let val = event.target.value.trim();
         if (val) {
+            //保存
             this.state.todoLists.push(
                 {
                     id: nanoid(),
@@ -109,10 +118,35 @@ class Todos extends React.Component {
                     completed: false
                 }
             );
+            this.store('todoList', this.state.todoLists)
         }
         this.setState({ newTodo: '' });
     }
+    componentDidMount() {
+        let array = this.store('todoList')
+        if (array.length > 0) {
+            this.setState({
+                todoLists: array
+            })
+        }
 
+    }
+    handleClickActiveTodos(name) {
+        let array = this.store(name)
+        this.setState({ todoLists: array })
+    }
+    handleClickCompletedTodos(name) {
+        let array = this.store(name)
+        this.setState({ todoLists: array })
+    }
+    store(key, data) {
+        if (data) {
+            return localStorage.setItem(key, JSON.stringify(data));
+        }
+
+        var store = localStorage.getItem(key);
+        return (store && JSON.parse(store)) || [];
+    }
     render() {
         return (
             <div>
@@ -122,7 +156,6 @@ class Todos extends React.Component {
                         <input className="new-todo" placeholder="What needs to be done?" autoFocus
                             value={this.state.newTodo}
                             onChange={this.handleInputScaning.bind(this)}
-
                             onKeyUp={this.handleNewTodoKeyDown.bind(this)}
                         />
                     </header>
@@ -138,25 +171,19 @@ class Todos extends React.Component {
                         </ul>
                     </section>
                     <footer className="footer">
-                        <span className="todo-count"><strong>0</strong> item left</span>
+                        <span className="todo-count"><strong>{this.getCount()}</strong> item left</span>
                         <ul className="filters">
                             <li onClick={this.handleClickSelectedAll}>
                                 <a className="selected" href="#/">All</a>
                             </li>
-                            <li onClick={this.handleClickSelectedAll}>
-                                <a href="#/">selectedAll</a>
+                            <li onClick={this.handleClickActiveTodos.bind(this, 'active')}>
+                                <a href="#/">Active</a>
                             </li>
-                            <li onClick={this.handleClickCanccelAll}>
-                                <a href="#/">cancelAll</a>
-                            </li>
-                            <li>
-                                <a href="#/active">Active</a>
-                            </li>
-                            <li>
-                                <a href="#/completed">Completed</a>
+                            <li onClick={this.handleClickCompletedTodos.bind(this, 'completed')}>
+                                <a href="#/">Completed</a>
                             </li>
                         </ul>
-                        <button className="clear-completed">Clear completed</button>
+                        <button className="clear-completed" onClick={this.handleClickClearCompleted}>Clear completed</button>
                     </footer>
                 </section>
             </div>
