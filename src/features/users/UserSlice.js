@@ -1,51 +1,49 @@
-import {
-  createSlice,
-  createAsyncThunk,
-  createEntityAdapter,
-} from "@reduxjs/toolkit";
-
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 import axios from "axios";
 
-const usersAdapter = createEntityAdapter({
-    selectId: (state) => state.user_name
-});
-const initialState = usersAdapter.getInitialState({
-    loading: 'idle'
-});
-
-export const fetchUsers = createAsyncThunk("users/fetchUser", async (a) => {
-    console.log(a);
+export const fetchUsers = createAsyncThunk("users/fetchUser", async () => {
   const response = await axios.get("/users");
-  return response.data
+  return response.data;
 });
 
-export const fetchUsersByUserName = createAsyncThunk("users/fetchUsersByUserName", async (params) => {
-    console.log('createAsyncThunk_fetchUsersByUserName:', params);
+export const fetchUsersByUserName = createAsyncThunk(
+  "users/fetchUsersByUserName",
+  async (params) => {
     const response = await axios.get(`/users/${params.userName}`);
-    return response.data
-  });
+    return response.data;
+  }
+);
 
+export const putUsersByUserName = createAsyncThunk(
+  "users/putUsersByUserName",
+  async (params) => {
+    console.log('here:', params);
+    const response = await axios.put(`/users/${params.userId}`, {
+      ...params,
+    });
+    return response.data;
+  }
+);
 
 const usersSlice = createSlice({
-    name: 'users',
-    initialState,
-    reducers (state, action){
-        state.loading = 'pending'
-    },
-    extraReducers: {
-      [fetchUsers.fulfilled]: usersAdapter.setAll,
-      [fetchUsersByUserName.fulfilled]: (state, action) => {
-          console.log(action);
-      },
-    },
-  })
-  
-  export default usersSlice.reducer
-  
-export const {
-    selectAll: selectAllUsers,
-    selectById: selectUserByUserId
-} = usersAdapter.getSelectors((state) => {
-    return state.users
-} )
+  name: "users",
+  initialState: {
+    users: [],
+    user: {},
+  },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder.addCase(fetchUsers.fulfilled, (state, { payload }) => {
+      state.users = payload;
+    });
+    builder.addCase(fetchUsersByUserName.fulfilled, (state, action) => {
+      state.user = action.payload;
+    });
+    builder.addCase(putUsersByUserName.fulfilled, (state, action) => {
+      state.user = action.payload;
+    });
+  },
+});
+console.log(usersSlice);
+export default usersSlice.reducer;

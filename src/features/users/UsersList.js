@@ -1,15 +1,17 @@
-import React from "react";
-import { useSelector } from "react-redux";
-import { selectAllUsers } from "./UserSlice";
+import React, {useEffect} from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { Menu } from "antd";
 import { MailOutlined } from "@ant-design/icons";
 import { useHistory } from "react-router-dom";
 import { fetchUsers } from '../users/UserSlice'
-import store from '../../app/store'
 export const UserList = (props) => {
-  const users = useSelector(selectAllUsers);
-  let history = useHistory();
-  store.dispatch(fetchUsers())
+  const users = useSelector((state) => state.users.users);
+  const dispatch = useDispatch()
+  const history = useHistory();
+  useEffect(() => {
+    dispatch(fetchUsers())
+     // eslint-disable-next-line
+  },[]);
   const handleOnClick = (e) => {
     history.push(`/users/${e.key}`);
   };
