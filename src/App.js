@@ -14,8 +14,7 @@ import { SinglePostPage } from "./features/posts/SinglePostPage";
 import { EditPostForm } from "./features/posts/EditPostForm";
 import { UsersList } from "./features/users/UsersList";
 import { UserPage } from "./features/users/UserPage";
-import { NotificationsList } from './features/notifications/NotificationsList'
-
+import { NotificationsList } from "./features/notifications/NotificationsList";
 
 function App() {
   return (
