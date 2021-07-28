@@ -7,12 +7,12 @@ import { TimeAgo } from "./TimeAgo";
 import { ReactionButtons } from "./ReactionButtons";
 
 import { selectAllPosts, fetchPosts } from "./postsSlice";
-
 export const PostsList = () => {
   const posts = useSelector(selectAllPosts);
   const dispatch = useDispatch();
 
   const postStatus = useSelector((state) => state.posts.status);
+  const error = useSelector((state) => state.posts.error);
 
   useEffect(() => {
     if (postStatus === "idle") {
@@ -42,11 +42,20 @@ export const PostsList = () => {
       </article>
     );
   });
+  let content;
+
+  if (postStatus === "loading") {
+    content = <div className="loader">Loading...</div>;
+  } else if (postStatus === "succeeded") {
+   content = <>{renderedPosts}</>
+  } else if (postStatus === "failed") {
+    content = <div>{error}</div>;
+  }
 
   return (
     <section className="posts-list">
       <h2>Posts</h2>
-      {renderedPosts}
+      {content}
     </section>
   );
 };
