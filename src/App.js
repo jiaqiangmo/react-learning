@@ -13,7 +13,6 @@ import { PostsList } from "./features/posts/PostsList";
 import { SinglePostPage } from "./features/posts/SinglePostPage";
 import { EditPostForm } from "./features/posts/EditPostForm";
 
-import { Counter } from "./features/counter/counter";
 
 function App() {
   return (
@@ -26,7 +25,6 @@ function App() {
             path="/"
             render={() => (
               <React.Fragment>
-                <Counter />
                 <AddPostForm />
                 <PostsList />
               </React.Fragment>

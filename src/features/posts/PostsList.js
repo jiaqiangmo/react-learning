@@ -6,7 +6,7 @@ import { PostAuthor } from "./PostAuthor";
 import { TimeAgo } from "./TimeAgo";
 import { ReactionButtons } from "./ReactionButtons";
 
-import { selectAllPosts, fetchPosts, increment } from "./postsSlice";
+import { selectAllPosts, fetchPosts } from "./postsSlice";
 
 export const PostsList = () => {
   const posts = useSelector(selectAllPosts);
@@ -17,8 +17,6 @@ export const PostsList = () => {
   useEffect(() => {
     if (postStatus === "idle") {
       dispatch(fetchPosts());
-
-      dispatch(increment())
     }
   }, [postStatus, dispatch]);
 
