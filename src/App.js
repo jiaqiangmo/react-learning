@@ -1,17 +1,19 @@
-import React from 'react'
+import React from "react";
 import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Redirect
-} from 'react-router-dom'
+  Redirect,
+} from "react-router-dom";
 
-import { Navbar } from './app/Navbar'
+import { Navbar } from "./app/Navbar";
 
-import { AddPostForm } from './features/posts/AddPostForm'
-import { PostsList } from './features/posts/PostsList'
-import { SinglePostPage } from './features/posts/SinglePostPage'
-import { EditPostForm } from './features/posts/EditPostForm'
+import { AddPostForm } from "./features/posts/AddPostForm";
+import { PostsList } from "./features/posts/PostsList";
+import { SinglePostPage } from "./features/posts/SinglePostPage";
+import { EditPostForm } from "./features/posts/EditPostForm";
+
+import { Counter } from "./features/counter/counter";
 
 function App() {
   return (
@@ -24,6 +26,7 @@ function App() {
             path="/"
             render={() => (
               <React.Fragment>
+                <Counter />
                 <AddPostForm />
                 <PostsList />
               </React.Fragment>
@@ -35,7 +38,7 @@ function App() {
         </Switch>
       </div>
     </Router>
-  )
+  );
 }
 
-export default App
+export default App;

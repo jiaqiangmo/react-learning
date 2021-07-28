@@ -7,15 +7,19 @@ import {
   decrement,
   incrementByAmount,
   incrementAsync,
-  c,
   fetchUserById,
 } from "./counterSlice.js";
 import { Input, Button } from "antd";
 
+const object = {
+  [increment]: () => {}
+}
+console.log(object)
+// { "counter/increment": Function}
+ 
 export function Counter() {
   const [incrementAmount, setIncrementAmount] = useState("2");
   const count = useSelector((state) => {
-    console.log(state);
     return state.counter.value;
   });
   const dispatch = useDispatch();

@@ -1,6 +1,6 @@
 import { createSlice, nanoid, createAsyncThunk } from "@reduxjs/toolkit";
 import { client } from '../../api/client'
-
+import {increment} from '../counter/counterSlice'
 const initialState = {
   posts: [],
   status: "idle",
@@ -56,6 +56,11 @@ const postsSlice = createSlice({
       }
     },
   },
+//   The builder.addCase() function takes either a plain string action type to listen for, or a Redux Toolkit action creator:
+  extraReducers: builder => {
+      builder.addCase('counter/decrement', () => {console.log('extraReducer decrement  a plain string action type to listen here');})
+      builder.addCase(increment, () => {console.log('extraReducer increment a Redux Toolkit action creator:');})
+  }
 });
 
 export const { postAdded, postUpdated, reactionAdded } = postsSlice.actions;

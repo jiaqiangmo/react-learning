@@ -16,6 +16,13 @@ export const coutnerSlice = createSlice({
       state.value += action.payload;
     },
   },
+  extraReducers: {
+    'counter/increment': (state, action) => {
+      // normal reducer logic to update the posts slice
+      // state.value += 1
+      console.log(state, action);
+    }
+  }
 });
 // The function below is called a thunk and allows us to perform async logic. It
 // can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This
