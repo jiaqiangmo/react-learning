@@ -1,7 +1,6 @@
-import { createSlice, createAsyncThunk, createEntityAdapter } from "@reduxjs/toolkit";
-const usersAdapter = createEntityAdapter()
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-const initialState = usersAdapter.getInitialState()
+import axios from "axios";
 
 export const fetchUsers = createAsyncThunk("users/fetchUser", async () => {
   const response = await axios.get("/users");
@@ -34,22 +33,17 @@ const usersSlice = createSlice({
     user: {},
   },
   reducers: {},
-  // extraReducers: (builder) => {
-  //   builder.addCase(fetchUsers.fulfilled, (state, { payload }) => {
-  //     state.users = payload;
-  //   });
-  //   builder.addCase(fetchUsersByUserName.fulfilled, (state, action) => {
-  //     state.user = action.payload;
-  //   });
-  //   builder.addCase(putUsersByUserName.fulfilled, (state, action) => {
-  //     state.user = action.payload;
-  //   });
-  // },
-  extraReducers: {
-    [fetchUsers.fulfilled]: usersAdapter.setAll
-  }
+  extraReducers: (builder) => {
+    builder.addCase(fetchUsers.fulfilled, (state, { payload }) => {
+      state.users = payload;
+    });
+    builder.addCase(fetchUsersByUserName.fulfilled, (state, action) => {
+      state.user = action.payload;
+    });
+    builder.addCase(putUsersByUserName.fulfilled, (state, action) => {
+      state.user = action.payload;
+    });
+  },
 });
+console.log(usersSlice);
 export default usersSlice.reducer;
-
-export const { selectAll: selectAllUsers, selectById: selectUserById } =
-  usersAdapter.getSelectors(state => state.users)
